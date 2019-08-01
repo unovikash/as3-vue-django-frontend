@@ -59,6 +59,14 @@
       viewCustomers() {
         router.push('/customer-list');
       },
+
+      viewStocks() {
+        router.push('/stock-list');
+      },
+
+      viewInvestments() {
+        router.push('/investment-list');
+      },
       
       login() {
         router.push("/auth");
@@ -79,6 +87,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

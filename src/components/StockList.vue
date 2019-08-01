@@ -21,19 +21,19 @@
                             :value="true"
                             type="success"
                 >
-                    New customer has been added.
+                    New stock has been added.
                 </v-alert>
                 <v-alert v-if="showMsg === 'update'" dismissible
                     :value="true"
                     type="success"
                 >
-                    Customer information has been updated.
+                    Stock information has been updated.
                 </v-alert>
                 <v-alert v-if="showMsg === 'deleted'" dismissible
                     :value="true"
                     type="success"
                 >
-                    Selected Customer has been deleted.
+                    Selected Stock has been deleted.
                 </v-alert>
             </v-flex>
         </v-layout>
@@ -43,7 +43,7 @@
                 <v-flex md6>
                     <v-data-table
                         :headers="headers"
-                        :items="customers"
+                        :items="stocks"
                         hide-actions
                         class="elevation-1"
                         fixed
@@ -51,27 +51,24 @@
                     >
 
                         <template slot="items" slot-scope="props" >
-                            <td>{{ props.item.pk }}</td>
-                            <td>{{ props.item.cust_number }}</td>
-                            <td>{{ props.item.name }}</td>
-                            <td nowrap="true">{{ props.item.address }}</td>
-                            <td nowrap="true">{{ props.item.city }}</td>
-                            <td nowrap="true">{{ props.item.state }}</td>
-                            <td nowrap="true">{{ props.item.zipcode }}</td>
-                            <td nowrap="true">{{ props.item.email }}</td>
-                            <td nowrap="true">{{ props.item.cell_phone }}</td>
+                            <td>{{ props.item.customer }}</td>
+                            <td nowrap="true">{{ props.item.symbol }}</td>
+                            <td nowrap="true">{{ props.item.name }}</td>
+                            <td nowrap="true">{{ props.item.shares }}</td>
+                            <td nowrap="true">{{ props.item.purchase_price }}</td>
+                            <td nowrap="true">{{ props.item.purchase_date }}</td>
                             <td nowrap="true">
-                                <v-icon @click="updateCustomer(props.item)">edit</v-icon>
+                                <v-icon @click="updateStock(props.item)">edit</v-icon>
                             </td>
                             <td nowrap="true">
-                                <v-icon @click="deleteCustomer(props.item)">delete</v-icon>
+                                <v-icon @click="deleteStock(props.item)">delete</v-icon>
                             </td>
                         </template>
                     </v-data-table>
                 </v-flex>
             </v-layout>
         </v-container>
-        <v-btn class="blue white--text" @click="addNewCustomer">Add Customer</v-btn>
+        <v-btn class="blue white--text" @click="addNewStock">Add Stock</v-btn>
     </v-container>
 </main>
 </template>
@@ -84,28 +81,25 @@ import {APIService} from '../http/APIService';
 const apiService = new APIService();
 
 export default {
-    name: "CustomerList",
+    name: "StockList",
     data: () => ({
         customers: [],
         validUserName: "Guest",
-        customerSize: 0,
+        stockSize: 0,
         showMsg: '',
         headers: [
-            {text: 'Customer Id', align: 'left', sortable: false,},
-            {text: 'Customer Number', align: 'left', sortable: false,},
+            {text: 'Customer', sortable: false, align: 'left',},
+            {text: 'Symbol', sortable: false, align: 'left',},
             {text: 'Name', sortable: false, align: 'left',},
-            {text: 'Address', sortable: false, align: 'left',},
-            {text: 'City', sortable: false, align: 'left',},
-            {text: 'State', sortable: false, align: 'left',},
-            {text: 'ZipCode', sortable: false, align: 'left',},
-            {text: 'Email', sortable: false, align: 'left',},
-            {text: 'Phone', sortable: false, align: 'left',},
+            {text: 'Shares', sortable: false, align: 'left',},
+            {text: 'Purchase Price', sortable: false, align: 'left',},
+            {text: 'Purchase Date', sortable: false, align: 'left',},
             {text: 'Update', sortable: false, align: 'left',},
             {text: 'Delete', sortable: false, align: 'left',}
         ],
     }),
     mounted() {
-        this.getCustomers();
+        this.getStocks();
         this.showMessages();
     },
     methods: {
@@ -115,11 +109,11 @@ export default {
             this.showMsg = this.$route.params.msg;
             }
         },
-        getCustomers() {
-            apiService.getCustomerList().then(response => {
-                this.customers = response.data.data;
-                this.customerSize = this.customers.length;
-                console.log("Customers Found: " + this.customerSize)
+        getStocks() {
+            apiService.getStockList().then(response => {
+                this.stocks = response.data.data;
+                this.stockSize = this.stocks.length;
+                console.log("Stocks Found: " + this.stockSize)
                 if (localStorage.getItem("isAuthenticates")
                     && JSON.parse(localStorage.getItem("isAuthenticates")) === true) {
                     this.validUserName = JSON.parse(localStorage.getItem("log_user"));
@@ -133,21 +127,21 @@ export default {
                 }
             });
         },
-        addNewCustomer() {
+        addNewStock() {
             if (localStorage.getItem("isAuthenticates")
             && JSON.parse(localStorage.getItem("isAuthenticates")) === true) {
-                router.push('/customer-create');
+                router.push('/stock-create');
             } else {
                 router.push("/auth");
             }
         },
-        updateCustomer(customer) {
-            router.push('/customer-create/' + customer.pk);
+        updateStock(stock) {
+            router.push('/stock-create/' + stock.pk);
         },
-        deleteCustomer(customer) {
-            apiService.deleteCustomer(customer.pk).then(response => {
+        deleteStock(stock) {
+            apiService.deleteStock(stock.pk).then(response => {
                 if (response.status === 204) {
-                    alert("Customer deleted");
+                    alert("Stock deleted");
                     this.showMsg = 'deleted';
                     this.$router.go();
                 }

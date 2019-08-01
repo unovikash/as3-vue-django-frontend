@@ -83,7 +83,16 @@
     methods: {
       viewCustomers() {
         router.push('/customer-list');
-      },     
+      },  
+
+      viewStocks() {
+        router.push('/stock-list');
+      },
+      
+      viewInvestments() {
+        router.push('/investment-list');
+      },
+
       getUser() {
         if (localStorage.getItem("isAuthenticates")
           && JSON.parse(localStorage.getItem("isAuthenticates")) === true) {
